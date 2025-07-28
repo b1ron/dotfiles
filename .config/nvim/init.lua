@@ -43,3 +43,22 @@ vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fc', builtin.commands, {})
 
+local actions = require('telescope.actions')
+local action_state = require('telescope.actions.state')
+
+require('telescope').setup{
+  defaults = {
+    mappings = {
+      i = {
+        ["<C-y>"] = function(prompt_bufnr)
+          local entry = action_state.get_selected_entry()
+          local filename = entry.path or entry.filename or entry.value
+          vim.fn.setreg('+', filename)  -- copy to system clipboard
+          print("Copied to clipboard: " .. filename)
+          actions.close(prompt_bufnr)
+        end,
+      },
+    },
+  },
+}
+
