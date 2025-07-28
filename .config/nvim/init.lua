@@ -22,12 +22,48 @@ vim.opt.rtp:prepend("~/.config/nvim/lazy/lazy.nvim")
 
 -- Load plugins
 require("lazy").setup({
-  -- Example theme
-  --- { "ellisonleao/gruvbox.nvim" },
-  'nvim-telescope/telescope.nvim',
-  dependencies = { 'nvim-lua/plenary.nvim' },
-  'nvim-treesitter/nvim-treesitter', 
-  build = ':TSUpdate',
+  -- telescope
+  {
+    'nvim-telescope/telescope.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+  },
+
+  -- treesitter
+  {
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
+  },
+
+  -- autopairs (auto-close brackets, etc.)
+  {
+    'windwp/nvim-autopairs',
+    event = "InsertEnter",
+    config = function()
+      require("nvim-autopairs").setup()
+    end,
+  },
+
+  -- basic autocompletion
+  {
+    'hrsh7th/nvim-cmp',
+    event = "InsertEnter",
+    dependencies = {
+      'hrsh7th/cmp-buffer', -- words from current buffer
+      'hrsh7th/cmp-path',   -- file paths
+    },
+    config = function()
+      local cmp = require("cmp")
+      cmp.setup({
+        mapping = cmp.mapping.preset.insert({
+          ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+        }),
+        sources = {
+          { name = 'buffer' },
+          { name = 'path' },
+        },
+      })
+    end,
+  },
 })
 
 require('nvim-treesitter.configs').setup {
