@@ -1,5 +1,5 @@
 --- theme and stuff
-vim.cmd.colorscheme('mine')
+--- vim.cmd.colorscheme('mine')
 
 vim.opt.number = true                              
 vim.opt.relativenumber = true                      
@@ -22,6 +22,32 @@ vim.opt.rtp:prepend("~/.config/nvim/lazy/lazy.nvim")
 
 -- Load plugins
 require("lazy").setup({
+  {
+    "sainnhe/gruvbox-material",
+    priority = 1000,
+    config = function()
+      vim.g.gruvbox_material_better_performance = 1
+      vim.g.gruvbox_material_disable_italic_comment = 1
+      vim.cmd.colorscheme("gruvbox-material")
+
+      vim.cmd([[
+        highlight FloatShadow gui=NONE
+        highlight MatchParen guibg=#504945 gui=NONE guisp=NONE
+
+        highlight Normal guibg=#121212
+        highlight StatusLine guibg=#0D0D0D
+
+        highlight TelescopeNormal guibg=#0F0F0F
+        highlight TelescopeBorder guibg=#0F0F0F
+
+        highlight Pmenu guibg=#0D0D0D
+        highlight NormalFloat guibg=#0D0D0D
+        highlight CursorLine guibg=#0D0D0D
+
+        highlight FloatBorder guibg=#0B0B0B
+      ]])
+    end,
+  },
   -- telescope
   {
     'nvim-telescope/telescope.nvim',

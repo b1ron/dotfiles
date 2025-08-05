@@ -16,3 +16,7 @@ source ~/.local/share/blesh/ble.sh
 source ~/.git-prompt.sh
 PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
 alias config='/usr/bin/git --git-dir=/home/byron/.myconfig/ --work-tree=/home/byron'
+
+if [ -x "$(command -v tmux)" ] && [ -z "${TMUX}" ]; then
+  exec tmux new-session -A -s ${USER} >/dev/null 2>&1
+fi
