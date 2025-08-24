@@ -1,6 +1,3 @@
---- theme and stuff
---- vim.cmd.colorscheme('mine')
-
 vim.opt.number = true                              
 vim.opt.relativenumber = true                      
 vim.opt.cursorline = true                          
@@ -14,6 +11,42 @@ vim.opt.softtabstop = 2
 vim.opt.expandtab = true                           
 vim.opt.smartindent = true                         
 vim.opt.autoindent = true
+vim.opt.hlsearch = false
+
+-- TODO add reload for lazy
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "c",
+  callback = function()
+    vim.bo.commentstring = "/* %s */"
+  end
+})
+
+local buf_term = nil
+
+local function compile_and_run_c(flags)
+  local file = vim.fn.expand("%")
+  local out = vim.fn.expand("%:r")
+  return "gcc " .. flags .. " " .. file .. " -o " .. out .. " && ./" .. out
+end
+
+vim.keymap.set("t", "<F5>", [[<C-\><C-n>:bd!<CR>]], { silent = true })
+
+vim.keymap.set("n", "<F5>", function()
+  local cmd = compile_and_run_c("-Wall -std=c89")
+  if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
+    vim.api.nvim_set_current_buf(term_buf)
+
+    vim.cmd("split | terminal")
+    vim.cmd("startinsert")
+    vim.fn.chansend(vim.b.terminal_job_id, cmd .. "\n")
+  else
+    term_buf = vim.api.nvim_get_current_buf()
+    vim.cmd("split | terminal")
+    vim.cmd("startinsert")
+    vim.fn.chansend(vim.b.terminal_job_id, cmd .. "\n")
+  end
+end, { silent = true })
 
 vim.g.mapleader = ' '
 
@@ -48,6 +81,7 @@ require("lazy").setup({
       ]])
     end,
   },
+  
   -- telescope
   {
     'nvim-telescope/telescope.nvim',
@@ -90,6 +124,33 @@ require("lazy").setup({
       })
     end,
   },
+
+  -- vim-commentary (comment out stuff)
+  {
+    "tpope/vim-commentary",
+    event = "VeryLazy", -- loads it lazily, e.g., after startup
+  },
+
+  -- formatter
+  {
+    "mhartington/formatter.nvim",
+    config = function()
+      require("formatter").setup({
+        logging = true,
+        filetype = {
+          c = {
+            require("formatter.filetypes.c").clangformat,
+          },
+          cpp = {
+            require("formatter.filetypes.cpp").clangformat,
+          },
+          lua = {
+            require("formatter.filetypes.lua").stylua,
+          },
+        },
+      })
+    end,
+  }
 })
 
 require('nvim-treesitter.configs').setup {
