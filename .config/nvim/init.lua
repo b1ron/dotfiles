@@ -22,7 +22,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end
 })
 
-local buf_term = nil
+local term_buf = nil
 
 local function compile_and_run_c(flags)
   local file = vim.fn.expand("%")
