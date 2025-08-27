@@ -7,6 +7,10 @@
 
 source ~/.local/share/blesh/ble.sh
 
+# make M-DEL and Ctrl-b use backward-kill-word instead of unix-word-rubout
+bind '"\M-\C-?": backward-kill-word'
+bind '"\C-b": backward-kill-word'
+
 alias ls='ls --color=auto'
 alias ll='ls -l --color=auto'
 alias grep='grep --color=auto'
